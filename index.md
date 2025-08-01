@@ -42,7 +42,7 @@ For your second milestone, explain what you've worked on since your previous mil
 
 # First Milestone
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/bxvZ5RsWZrU?si=GEWLw9Fpcn3v2nQx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bxvZ5RsWZrU?si=I1TUHWwkD7sMzoyL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 The ESP32 weather station utilizes an ESP32 with built-in Wi-Fi to get information from an open source API, OpenWeatherStation, and displays the information on an Oled. 
 
