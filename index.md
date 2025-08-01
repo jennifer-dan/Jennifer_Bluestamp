@@ -47,11 +47,36 @@ For your second milestone, explain what you've worked on since your previous mil
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/CaCazFBhYKs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
-For your first milestone, describe what your project is and how you plan to build it. You can include:
-- An explanation about the different components of your project and how they will all integrate together
-- Technical progress you've made so far
-- Challenges you're facing and solving in your future milestones
-- What your plan is to complete your project
+The ESP32 weather station utilizes an ESP32 with built-in Wi-Fi to get information from an open source API, OpenWeatherStation, and displays the information on an Oled. 
+
+**My Plan:**
+1. First work on the hardware
+- Connect the Oled and the ESP32 together using male to female wires, a breadboard, and male wires. 
+2. Setup the ESP32 on the Arduino IDE
+- Install the library esp32 by Espressif Systems 
+- Set up the port and select ESP32 Dev Module
+3. Test the Oled 
+- Used an image and converted it to byte arrays to display on my Oled
+- Using this website: https://javl.github.io/image2cpp/  
+4. Set up Wi-Fi on ESP32
+- Create a hotspot on a separate device with 2.4 Hz
+- Added the name and password of the hotspot 
+- Wrote code that displayed the IP address and whether the ESP32 was able to connect to the hotspot or not in the serial monitor. 
+5. Got an API Key
+- Created an account of OpenWeathermap which is an open source API 
+- Got an API key and use it to get data for the temperature and description of the weather in my area
+- Parsed the JSON file by storing it into doc and picking out what I wanted to display using float temp and const char description
+Displayed the temperature and description onto the Oled
+
+**Challenges:**
+1. Connecting to Wi-Fi
+- When trying to connect my ESP32 to wifi I first tried to use the hotspot on my phone however that did not work, so I had to use my laptop in order to create a 2.4 Hz mobile hotspot my ESP32 could connect too. I changed the name and password of my hotspot to be simpler so the ESP32 could be connected easier. In order to troubleshoot I made sure to display whether the ESP32 was in the process of connecting and whether it was unable or unable to connect on the serial monitor.
+2. HTTP request 
+- In order for my Oled to display real time data that frequently changes, I need to send a GET request to get the data. However I did not know how to approach this so with the help of my instructor I was able to store the string from the Json file into the variable payload then gets parsed in the doc object. 
+3. Displaying the Temperature and Description on the Oled
+- My temperature and description were displayed in the serial monitor however not on my Oled. The problem was because I didn’t set the color  of the text that was going to display on the Oled. So I couldn’t see what was being displayed on my Oled. However when I set the text color to white I was able to see what was being displayed on the Oled. 
+
+
 
 # Schematics 
 Here's where you'll put images of your schematics. [Tinkercad](https://www.tinkercad.com/blog/official-guide-to-tinkercad-circuits) and [Fritzing](https://fritzing.org/learning/) are both great resoruces to create professional schematic diagrams, though BSE recommends Tinkercad becuase it can be done easily and for free in the browser. 
