@@ -43,8 +43,6 @@ For your second milestone, explain what you've worked on since your previous mil
 
 # First Milestone
 
-**Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
-
 <iframe width="560" height="315" src="https://www.youtube.com/embed/CaCazFBhYKs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
 
 The ESP32 weather station utilizes an ESP32 with built-in Wi-Fi to get information from an open source API, OpenWeatherStation, and displays the information on an Oled. 
@@ -75,7 +73,6 @@ Displayed the temperature and description onto the Oled
 - In order for my Oled to display real time data that frequently changes, I need to send a GET request to get the data. However I did not know how to approach this so with the help of my instructor I was able to store the string from the Json file into the variable payload then gets parsed in the doc object. 
 3. Displaying the Temperature and Description on the Oled
 - My temperature and description were displayed in the serial monitor however not on my Oled. The problem was because I didn’t set the color  of the text that was going to display on the Oled. So I couldn’t see what was being displayed on my Oled. However when I set the text color to white I was able to see what was being displayed on the Oled. 
-
 
 
 # Schematics 
