@@ -30,12 +30,13 @@ For your final milestone, explain the outcome of your project. Key details to in
 
 # Second Milestone
 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/lubYXXxrUH4?si=uh0EF5rrIUMXEUlI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 **Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
 
 **Technical Details:**
 - Connected two ESP32’s in order to transmit data within one another using the esp now library
 - Added a photoresistor and a thermistor to the newly added ESP32 in order to get the light intensity and the humidity level and transmit the data collected to the ESP32 receiver to display it onto the OLED
-
 
 # First Milestone
 
