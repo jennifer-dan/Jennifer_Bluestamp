@@ -32,17 +32,26 @@ For your final milestone, explain the outcome of your project. Key details to in
 
 **Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
 
+**Technical Details:**
+- Connected two ESP32’s in order to transmit data within one another using the esp now library
+- Added a photoresistor and a thermistor to the newly added ESP32 in order to get the light intensity and the humidity level and transmit the data collected to the ESP32 receiver to display it onto the OLED
 
-For your second milestone, explain what you've worked on since your previous milestone. You can highlight:
-- Technical details of what you've accomplished and how they contribute to the final goal
-- What has been surprising about the project so far
-- Previous challenges you faced that you overcame
-- What needs to be completed before your final milestone 
 
 # First Milestone
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/bxvZ5RsWZrU?si=I1TUHWwkD7sMzoyL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
+**Surprising Things:**
+- During milestone 2 there has been some surprising things that I have noticed. Picking this project has allowed a lot of customizability and I can connect a lot of sensors. 
+- Because the ESP32 has wifi and bluetooth there are a lot of doors that open when I am using ESP32’s
+
+**Challenges:**
+- Connecting the two ESP32s using the esp now function has been my biggest challenge. In order to connect the two esp32’s together I need to make sure that they are on the same wifi channel. So I set them both to wifi channel 6. 
+
+- Because I am using the esp now function, I do not need wifi to connect the two esp32’s however I do need to connect the receiving esp32 to the wifi. Because the wifi channel is constantly changing on the mobile hotspot I need to make sure both esp32’s is connected to the same wifi channel as the mobile hotspot. 
+
+**Next goals: **
+- For my final milestone I plan to use MQTT client which sends my sensor data onto a web server in order for my esp32 receiver to get the data. This is a more sustainable and consistent way to transmit data between my two esp32s rather than using the esp now function which is inconsistent when connecting and takes a few tries to connect the two esp32s. 
 
 
 The ESP32 weather station utilizes an ESP32 with built-in Wi-Fi to get information from an open source API, OpenWeatherStation, and displays the information on an Oled. 
