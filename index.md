@@ -21,6 +21,8 @@ You should comment out all portions of your portfolio that you have not complete
 
 
 For your final milestone, explain the outcome of your project. Key details to include are:
+**Accomplishments**
+- 
 - What you've accomplished since your previous milestone
 - What your biggest challenges and triumphs were at BSE
 - A summary of key topics you learned about
