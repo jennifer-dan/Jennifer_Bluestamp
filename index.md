@@ -91,17 +91,444 @@ Displayed the temperature and description onto the Oled
 # Code
 Here's where you'll put your code. The syntax below places it into a block of code. Follow the guide [here]([url](https://www.markdownguide.org/extended-syntax/)) to learn how to customize it to your project needs. 
 
-```c++
+**ESP32 Sender Code**
+```arduino ide
+#include "ESP32_NOW.h"
+#include "WiFi.h"
+#include <esp_mac.h>  // For MACSTR and MAC2STR macros
+#include "DHT.h"
+#include "Adafruit_MQTT.h"
+#include "Adafruit_MQTT_Client.h"
+#include "WiFiClientSecure.h"
+
+
+#define DHTPIN 4 
+#define DHTTYPE DHT11
+#define PhotoRes 35
+
+const char* ssid = "ssid";
+const char* password = "password";
+
+#define WLAN_SSID "ssid"
+#define WLAN_PASS "password"
+#define AIO_SERVER      "io.adafruit.com"
+#define AIO_SERVERPORT  8883
+#define AIO_USERNAME  "username"
+#define AIO_KEY       "aio key"
+#define DHTPIN 4 
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+WiFiClientSecure client;
+Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
+
+const char* adafruitio_root_ca = \
+      "-----BEGIN CERTIFICATE-----\n"
+      "MIIEjTCCA3WgAwIBAgIQDQd4KhM/xvmlcpbhMf/ReTANBgkqhkiG9w0BAQsFADBh\n"
+      "MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n"
+      "d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH\n"
+      "MjAeFw0xNzExMDIxMjIzMzdaFw0yNzExMDIxMjIzMzdaMGAxCzAJBgNVBAYTAlVT\n"
+      "MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j\n"
+      "b20xHzAdBgNVBAMTFkdlb1RydXN0IFRMUyBSU0EgQ0EgRzEwggEiMA0GCSqGSIb3\n"
+      "DQEBAQUAA4IBDwAwggEKAoIBAQC+F+jsvikKy/65LWEx/TMkCDIuWegh1Ngwvm4Q\n"
+      "yISgP7oU5d79eoySG3vOhC3w/3jEMuipoH1fBtp7m0tTpsYbAhch4XA7rfuD6whU\n"
+      "gajeErLVxoiWMPkC/DnUvbgi74BJmdBiuGHQSd7LwsuXpTEGG9fYXcbTVN5SATYq\n"
+      "DfbexbYxTMwVJWoVb6lrBEgM3gBBqiiAiy800xu1Nq07JdCIQkBsNpFtZbIZhsDS\n"
+      "fzlGWP4wEmBQ3O67c+ZXkFr2DcrXBEtHam80Gp2SNhou2U5U7UesDL/xgLK6/0d7\n"
+      "6TnEVMSUVJkZ8VeZr+IUIlvoLrtjLbqugb0T3OYXW+CQU0kBAgMBAAGjggFAMIIB\n"
+      "PDAdBgNVHQ4EFgQUlE/UXYvkpOKmgP792PkA76O+AlcwHwYDVR0jBBgwFoAUTiJU\n"
+      "IBiV5uNu5g/6+rkS7QYXjzkwDgYDVR0PAQH/BAQDAgGGMB0GA1UdJQQWMBQGCCsG\n"
+      "AQUFBwMBBggrBgEFBQcDAjASBgNVHRMBAf8ECDAGAQH/AgEAMDQGCCsGAQUFBwEB\n"
+      "BCgwJjAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEIGA1Ud\n"
+      "HwQ7MDkwN6A1oDOGMWh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEds\n"
+      "b2JhbFJvb3RHMi5jcmwwPQYDVR0gBDYwNDAyBgRVHSAAMCowKAYIKwYBBQUHAgEW\n"
+      "HGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwDQYJKoZIhvcNAQELBQADggEB\n"
+      "AIIcBDqC6cWpyGUSXAjjAcYwsK4iiGF7KweG97i1RJz1kwZhRoo6orU1JtBYnjzB\n"
+      "c4+/sXmnHJk3mlPyL1xuIAt9sMeC7+vreRIF5wFBC0MCN5sbHwhNN1JzKbifNeP5\n"
+      "ozpZdQFmkCo+neBiKR6HqIA+LMTMCMMuv2khGGuPHmtDze4GmEGZtYLyF8EQpa5Y\n"
+      "jPuV6k2Cr/N3XxFpT3hRpt/3usU/Zb9wfKPtWpoznZ4/44c1p9rzFcZYrWkj3A+7\n"
+      "TNBJE0GmP2fhXhP1D/XVfIW/h0yCJGEiV9Glm/uGOa3DXHlmbAcxSyCRraG+ZBkA\n"
+      "7h4SeM6Y8l/7MBRpPCz6l8Y=\n"
+      "-----END CERTIFICATE-----\n";
+
+Adafruit_MQTT_Publish humidity = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/humidity");
+Adafruit_MQTT_Publish light = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/light");
+
+
+class ESP_NOW_Broadcast_Peer : public ESP_NOW_Peer {
+public:
+  ESP_NOW_Broadcast_Peer(uint8_t channel, wifi_interface_t iface, const uint8_t *lmk)
+    : ESP_NOW_Peer(ESP_NOW.BROADCAST_ADDR, channel, iface, lmk) {}
+  ~ESP_NOW_Broadcast_Peer() { remove(); }
+
+  bool begin() {
+    if (!ESP_NOW.begin() || !add()) {
+      log_e("Failed to initialize ESP-NOW or register the broadcast peer");
+      return false;
+    }
+    return true;
+  }
+
+  bool send_message(const uint8_t *data, size_t len) {
+    if (!send(data, len)) {
+      log_e("Failed to broadcast message");
+      return false;
+    }
+    return true;
+  }
+};
+
+/* Global Variables */
+ESP_NOW_Broadcast_Peer* broadcast_peer = nullptr;
+
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-  Serial.println("Hello World!");
+  Serial.begin(115200);
+  delay(10);
+
+  Serial.println(F("Adafruit IO MQTTS (SSL/TLS) Example"));
+  Serial.println("DHT11 Sensor Initialization");
+  dht.begin();
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  WiFi.begin(WLAN_SSID, WLAN_PASS);
+  Serial.print("Connecting to WiFi");
+  Serial.println(WLAN_SSID);
+
+
+  int attempts = 0;
+  while (WiFi.status() != WL_CONNECTED && attempts < 100) {
+    delay(500);
+    Serial.print(".");
+    attempts++;
+  }
+
+  client.setCACert(adafruitio_root_ca);
+
+ if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\nConnected to WiFi!");
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+
+  } else {
+    Serial.println("\nFailed to connect to WiFi.");
+  }
+  // --- Step 2: Get Wi-Fi channel ---
+  int wifiChannel = WiFi.channel();
+  Serial.printf("Wi-Fi is on channel: %d\n", wifiChannel);
+
+  // --- Step 3: Disconnect Wi-Fi and set channel for ESP-NOW ---
+  WiFi.mode(WIFI_STA);
+  WiFi.setChannel(wifiChannel);
+
+
+  // --- Step 4: Init ESP-NOW ---
+  broadcast_peer = new ESP_NOW_Broadcast_Peer(wifiChannel, WIFI_IF_STA, nullptr);
+  if (!broadcast_peer->begin()) {
+    Serial.println("Failed to initialize broadcast peer");
+    delay(5000);
+    ESP.restart();
+  }
+
+  Serial.printf("ESP-NOW version: %d, max data length: %d\n",
+                ESP_NOW.getVersion(), ESP_NOW.getMaxDataLen());
+  Serial.println("Setup complete. Broadcasting messages every 5 seconds.");
+}
+
+uint32_t x=0;
+
+void loop() {
+  MQTT_connect();
+  float humidityValue = dht.readHumidity();
+  int analogValue = analogRead(PhotoRes);
+
+  if (! humidity.publish(humidityValue)) //Publish Humidity Reading!
+ { 
+   Serial.println(F("Failed"));
+ } 
+ else {
+   Serial.print("Humidity Value = ");
+   Serial.println(humidityValue);
+ }
+
+  delay(2000);
+  const char* lightIntensity;
+  if (analogValue < 40) {
+    lightIntensity = "Dark";
+  } else if (analogValue < 800) {
+    lightIntensity = "Dim";
+  } else if (analogValue < 3000) {
+    lightIntensity = "Bright";
+  } else {
+    lightIntensity = "Very Bright";
+  }
+
+if (!light.publish(lightIntensity)) {  // Publish Light Reading
+    Serial.println(F("Failed to publish light intensity"));
+} else {
+    Serial.print(F("Light Intensity: "));
+    Serial.println(lightIntensity);
+}
+
+  delay(5000);
+}
+
+void MQTT_connect() {
+  int8_t ret;
+
+  // Stop if already connected.
+  if (mqtt.connected()) {
+    return;
+  }
+
+  Serial.print("Connecting to MQTT... ");
+
+  uint8_t retries = 3;
+  while ((ret = mqtt.connect()) != 0) { // connect will return 0 for connected
+       Serial.println(mqtt.connectErrorString(ret));
+       Serial.println("Retrying MQTT connection in 5 seconds...");
+       mqtt.disconnect();
+       delay(5000);  // wait 5 seconds
+       retries--;
+       if (retries == 0) {
+         // basically die and wait for WDT to reset me
+         while (1);
+       }
+  }
+
+  Serial.println("MQTT Connected!");
+}
+
+
+```
+
+**ESP32 Reciever Code**
+
+```arduino ide
+#include "WiFi.h"
+#include <vector>
+#include <ArduinoJson.h>
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <HTTPClient.h>
+#include <PubSubClient.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET    -1
+#define SCREEN_ADDRESS 0x3C
+
+Adafruit_SSD1306 oled(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+const char* ssid = "ssid";
+const char* password = "password";
+const char* apiKey = "api key";
+const char* city = "Location"; 
+const char* mqtt_broker = "io.adafruit.com";  // Adafruit IO broker
+const int mqtt_port = 1883;                   // non-SSL port (simpler to start)
+const char* mqtt_username = "username";        // your Adafruit username
+const char* mqtt_password = "aio key"; // your AIO key
+const char* humidtopic = "jen_dann/feeds/humidity";  // Case-sensitive!
+const char* lighttopic = "jen_dann/feeds/light";  // Case-sensitive!
+
+
+
+String apiTemp = "";
+String apiDesc = "";
+String receivedData = "";
+
+WiFiClient espClient;       // Note: not WiFiClientSecure
+PubSubClient client(espClient);
+
+const char* adafruitio_root_ca = \
+      "-----BEGIN CERTIFICATE-----\n"
+      "MIIEjTCCA3WgAwIBAgIQDQd4KhM/xvmlcpbhMf/ReTANBgkqhkiG9w0BAQsFADBh\n"
+      "MQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3\n"
+      "d3cuZGlnaWNlcnQuY29tMSAwHgYDVQQDExdEaWdpQ2VydCBHbG9iYWwgUm9vdCBH\n"
+      "MjAeFw0xNzExMDIxMjIzMzdaFw0yNzExMDIxMjIzMzdaMGAxCzAJBgNVBAYTAlVT\n"
+      "MRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5j\n"
+      "b20xHzAdBgNVBAMTFkdlb1RydXN0IFRMUyBSU0EgQ0EgRzEwggEiMA0GCSqGSIb3\n"
+      "DQEBAQUAA4IBDwAwggEKAoIBAQC+F+jsvikKy/65LWEx/TMkCDIuWegh1Ngwvm4Q\n"
+      "yISgP7oU5d79eoySG3vOhC3w/3jEMuipoH1fBtp7m0tTpsYbAhch4XA7rfuD6whU\n"
+      "gajeErLVxoiWMPkC/DnUvbgi74BJmdBiuGHQSd7LwsuXpTEGG9fYXcbTVN5SATYq\n"
+      "DfbexbYxTMwVJWoVb6lrBEgM3gBBqiiAiy800xu1Nq07JdCIQkBsNpFtZbIZhsDS\n"
+      "fzlGWP4wEmBQ3O67c+ZXkFr2DcrXBEtHam80Gp2SNhou2U5U7UesDL/xgLK6/0d7\n"
+      "6TnEVMSUVJkZ8VeZr+IUIlvoLrtjLbqugb0T3OYXW+CQU0kBAgMBAAGjggFAMIIB\n"
+      "PDAdBgNVHQ4EFgQUlE/UXYvkpOKmgP792PkA76O+AlcwHwYDVR0jBBgwFoAUTiJU\n"
+      "IBiV5uNu5g/6+rkS7QYXjzkwDgYDVR0PAQH/BAQDAgGGMB0GA1UdJQQWMBQGCCsG\n"
+      "AQUFBwMBBggrBgEFBQcDAjASBgNVHRMBAf8ECDAGAQH/AgEAMDQGCCsGAQUFBwEB\n"
+      "BCgwJjAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMEIGA1Ud\n"
+      "HwQ7MDkwN6A1oDOGMWh0dHA6Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEds\n"
+      "b2JhbFJvb3RHMi5jcmwwPQYDVR0gBDYwNDAyBgRVHSAAMCowKAYIKwYBBQUHAgEW\n"
+      "HGh0dHBzOi8vd3d3LmRpZ2ljZXJ0LmNvbS9DUFMwDQYJKoZIhvcNAQELBQADggEB\n"
+      "AIIcBDqC6cWpyGUSXAjjAcYwsK4iiGF7KweG97i1RJz1kwZhRoo6orU1JtBYnjzB\n"
+      "c4+/sXmnHJk3mlPyL1xuIAt9sMeC7+vreRIF5wFBC0MCN5sbHwhNN1JzKbifNeP5\n"
+      "ozpZdQFmkCo+neBiKR6HqIA+LMTMCMMuv2khGGuPHmtDze4GmEGZtYLyF8EQpa5Y\n"
+      "jPuV6k2Cr/N3XxFpT3hRpt/3usU/Zb9wfKPtWpoznZ4/44c1p9rzFcZYrWkj3A+7\n"
+      "TNBJE0GmP2fhXhP1D/XVfIW/h0yCJGEiV9Glm/uGOa3DXHlmbAcxSyCRraG+ZBkA\n"
+      "7h4SeM6Y8l/7MBRpPCz6l8Y=\n"
+      "-----END CERTIFICATE-----\n";
+void updateOLED();
+
+
+
+void setup() {
+  Serial.begin(115200);
+
+  Serial.print("Username: "); Serial.println(mqtt_username);
+  Serial.print("Key: "); Serial.println(mqtt_password);
+  Serial.print("Humid Topic: "); Serial.println(humidtopic);
+    Serial.print("Light Topic: "); Serial.println(lighttopic);
+
+
+  // --- OLED init ---
+  if (!oled.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
+    Serial.println("OLED init failed");
+    while (true);
+  }
+
+  // --- Connect to Wi-Fi ---
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi");
+
+  oled.setTextSize(1);
+  oled.setTextColor(SSD1306_WHITE);
+  oled.clearDisplay();
+  oled.setCursor(0, 0);
+  oled.println("Connecting...");
+  oled.display();
+
+  int attempts = 0;
+  while (WiFi.status() != WL_CONNECTED && attempts < 100) {
+    delay(500);
+    Serial.print(".");
+    attempts++;
+  }
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("\nConnected to WiFi!");
+    Serial.print("IP Address: ");
+    Serial.println(WiFi.localIP());
+
+    oled.clearDisplay();
+    oled.setCursor(0, 0);
+    oled.println("Connected to WiFi");
+    oled.display();
+  } else {
+    Serial.println("\nFailed to connect to WiFi.");
+  }
+
+
+  client.setServer(mqtt_broker, mqtt_port);
+  client.setCallback(callback);
+
+  while (!client.connected()) {
+      String client_id = "esp32-client-";
+      client_id += String(WiFi.macAddress());
+      Serial.printf("The client %s connects to the public MQTT broker\n", client_id.c_str());
+      if (client.connect(client_id.c_str(), mqtt_username, mqtt_password)) {
+           Serial.println("Public EMQX MQTT broker connected");
+       } else {
+           Serial.print("failed with state ");
+          Serial.print(client.state());
+          delay(2000);
+       }
+    }
+    // Publish and subscribe
+    client.subscribe(humidtopic);
+    client.subscribe(lighttopic);
+
+  String serverPath = "http://api.openweathermap.org/data/2.5/weather?q=Los+Angeles,US&APPID=d6f778b1fecfcc2b8772b1767388b005&units=metric";
+  HTTPClient http;
+  http.begin(serverPath);
+  int httpCode = http.GET();
+  if (httpCode == 200) {
+    String payload = http.getString();
+    Serial.println(payload);
+
+    StaticJsonDocument<1024> doc;
+    DeserializationError error = deserializeJson(doc, payload);
+    if (!error) {
+      float temp = doc["main"]["temp"];
+      const char* description = doc["weather"][0]["description"];
+      Serial.printf("Temperature: %.1f C\n", temp);
+      Serial.printf("Description: %s\n", description);
+
+      apiTemp = String(temp);
+      apiDesc = String(description);
+      updateOLED();  // Show the data on OLED
+    } else {
+      Serial.println("JSON parse error");
+    }
+  } else {
+    Serial.printf("Error getting data: %d\n", httpCode);
+  }
+  http.end();
+
+
+}
+void callback(char* topic, byte* payload, unsigned int length) {
+    // Convert payload to string
+    char message[length+1];
+    for (int i = 0; i < length; i++) {
+        message[i] = (char)payload[i];
+    }
+    message[length] = '\0';
+
+    if (strcmp(topic, "jen_dann/feeds/humidity") == 0) {
+        // Erase only the old humidity value area
+        oled.fillRect(70, 35, 50, 10, SSD1306_BLACK);  // adjust width as needed
+
+        oled.setCursor(0, 35);
+        oled.print("Humidity:");
+        oled.setCursor(70, 35);
+        oled.print(message);
+        oled.print(" %");
+    } 
+    else if (strcmp(topic, "jen_dann/feeds/light") == 0) {
+        // Erase only the old light value area
+        oled.fillRect(50, 45, 70, 10, SSD1306_BLACK);  // adjust width as needed
+
+        oled.setCursor(0, 45);
+        oled.print("Light:");
+        oled.setCursor(50, 45);
+        oled.print(message);
+    }
+
+    oled.display();
+}
+
+void updateOLED() {
+  oled.clearDisplay();
+
+  float tempC = apiTemp.toFloat();                // Convert to float
+  float tempF = tempC * 9.0 / 5.0 + 32.0;         // Convert to Fahrenheit
+  String tempFStr = String(tempF, 1);              // Fahrenheit string with 1 decimal
+
+  oled.setCursor(0, 0);
+  oled.setTextSize(1);
+  oled.setTextColor(SSD1306_WHITE);
+  oled.print("Temp: ");
+  oled.print(tempFStr.c_str());   // Print Fahrenheit temp
+  oled.println(" F");             // Add 'F' and go to new line
+
+  oled.setCursor(0, 15);
+  oled.print("Desc: ");
+  oled.println(apiDesc.c_str());
+
+  oled.display();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  // Print debug info every 10 seconds
+  client.loop();
 
+
+  delay(100);
 }
+
 ```
 
 # Bill of Materials
