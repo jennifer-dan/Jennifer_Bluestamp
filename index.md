@@ -1,11 +1,6 @@
 # ESP32 Weather Station 
 Checking the weather on your phone is cool an all but imagine if you had a portable device that can display the humidity and light of the weather exactly where you are. 
 
-You should comment out all portions of your portfolio that you have not completed yet, as well as any instructions:
-```HTML 
-<!--- This is an HTML comment in Markdown -->
-<!--- Anything between these symbols will not render on the published site -->
-```
 
 | **Engineer** | **School** | **Area of Interest** | **Grade** |
 |:--:|:--:|:--:|:--:|
@@ -17,17 +12,17 @@ You should comment out all portions of your portfolio that you have not complete
   
 # Final Milestone
 
-**Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
-
-
 For your final milestone, explain the outcome of your project. Key details to include are:
 **Accomplishments**
-- 
-- What you've accomplished since your previous milestone
-- What your biggest challenges and triumphs were at BSE
-- A summary of key topics you learned about
-- What you hope to learn in the future after everything you've learned at BSE
-
+- I was able to establish a more stable connection between the two ESP32s using an MQTT web server and Adafruit IO
+**Challenges**
+- Because I never dealt with MQTT before it was a challenge trying to understand how it worked. I also had toruble setting up the Adafruit IO and making sure the syntax was correct in my code. I definetly had trouble of asking questions. Reflecting back on my time at BSE I would've asked more questions and asked for assistance when I needed it in order to complete my milestone faster.
+**What I learned**
+- I learned about OLEDs and how to program them using Arduino IDE. In order to display something on the OLEd first you need to do some initial set up such as setting up the size, cursor position, and text color.
+- Setting up Wifi on ESP32s
+- Connecting two ESP32s using the ESP NOW function. How both ESP32s need to be on the same wifi channel as the mobile hotspot. 
+**Future Endeavors**
+- In the future I hope to learn more about different microcontrollers, not just ESP32s. I want to build my own ESP32 so I can really understand the functions of the ESP32 and how it works internally. 
 
 
 # Second Milestone
