@@ -8,7 +8,7 @@ Checking the weather on your phone is cool an all but imagine if you had a porta
 
 **Replace the BlueStamp logo below with an image of yourself and your completed project. Follow the guide [here](https://tomcam.github.io/least-github-pages/adding-images-github-pages-site.html) if you need help.**
 
-![Book logo](/IMG_8243.png)
+![Book logo](/6ED1227C-6C2A-4518-A0F2-732721804F50.png)
   
 # Final Milestone
 
